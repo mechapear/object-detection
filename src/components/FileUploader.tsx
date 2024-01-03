@@ -18,6 +18,7 @@ export default function FileUploader() {
     const base64 = await convertFileToBase64String(imageInput)
     if (!base64) return
     setImage(base64)
+    setDetectedInfo(null)
 
     try {
       const data = await postImage(base64).then((res) => res.json())
