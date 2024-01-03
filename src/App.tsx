@@ -1,5 +1,10 @@
 import { ChangeEventHandler, useState } from 'react'
 
+export type ImageDimension = {
+  width: number
+  height: number
+}
+
 export type BoundingBox = {
   bottom: number
   left: number
@@ -21,6 +26,9 @@ export type DetectedInfo = {
 
 export default function App() {
   const [image, setImage] = useState<string | null>(null)
+  const [imageDimension, setImageDimension] = useState<ImageDimension | null>(
+    null,
+  )
   const [detectedInfo, setDetectedInfo] = useState<DetectedInfo | null>(null)
 
   const handleUploadImage: ChangeEventHandler<HTMLInputElement> = async (
@@ -32,6 +40,10 @@ export default function App() {
     const base64 = await convertFileToBase64String(imageInput)
     if (!base64) return
     setImage(base64)
+
+    const dimension = await getImageDimension(imageInput)
+    if (!dimension) return
+    setImageDimension(dimension)
 
     try {
       const data = await postImage(base64).then((res) => res.json())
@@ -48,8 +60,9 @@ export default function App() {
         <label>Select image: </label>
         <input type="file" accept="image/*" onChange={handleUploadImage} />
       </div>
-      {image && <img src={image} alt="preview" height="100px" width="100px" />}
+      {image && <img src={image} alt="preview" height="300px" width="300px" />}
       {detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}
+      {imageDimension && <pre>{JSON.stringify(imageDimension, null, 2)}</pre>}
     </>
   )
 }
@@ -104,4 +117,23 @@ function convertFileToBase64String(file: File): Promise<string | void> {
       return base64
     })
     .catch((error) => console.log(error))
+}
+
+function getImageDimension(file: File): Promise<ImageDimension> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+
+    reader.onloadend = () => {
+      const image = new Image()
+      image.onload = function () {
+        resolve({ width: image.width, height: image.height })
+      }
+      image.src = reader.result as string
+    }
+
+    reader.onerror = (error) => {
+      reject(error)
+    }
+  })
 }
