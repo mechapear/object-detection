@@ -1,10 +1,15 @@
+import { PREVIEW_IMAGE_SIZE } from '../App'
 import {
   BoundingBox,
   DetectedInfo,
   DetectedObject,
-  ImageDimension,
-  PREVIEW_IMAGE_SIZE,
-} from '../App.tsx'
+} from '../domain/detectedInfo'
+import { roundToTwoDigit } from '../utils/roundToTwoDigit'
+
+export type ImageDimension = {
+  width: number
+  height: number
+}
 
 export type BoundingBoxProps = {
   imageDomRef: HTMLImageElement | null
@@ -95,8 +100,4 @@ function calculateRatio(
   targetSize: number,
 ): number {
   return roundToTwoDigit((targetSize * renderSize) / natureSize)
-}
-
-function roundToTwoDigit(num: number): number {
-  return Math.round(num * 100) / 100
 }

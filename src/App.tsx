@@ -1,29 +1,6 @@
 import { ChangeEventHandler, useRef, useState } from 'react'
 import BoundingBox from './components/BoundingBox'
-
-export type ImageDimension = {
-  width: number
-  height: number
-}
-
-export type BoundingBox = {
-  bottom: number
-  left: number
-  right: number
-  top: number
-}
-
-export type DetectedObject = {
-  bounding_box: BoundingBox
-  name: string
-  confidence: number
-  parent: string
-}
-
-export type DetectedInfo = {
-  service_id: string
-  detected_objects: DetectedObject[]
-}
+import { DetectedInfo } from './domain/detectedInfo.ts'
 
 export const PREVIEW_IMAGE_SIZE = 300
 
