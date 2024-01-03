@@ -1,10 +1,11 @@
-import { PREVIEW_IMAGE_SIZE } from '../components/FileUploader'
 import {
   BoundingBox,
   DetectedInfo,
   DetectedObject,
+  objectCategoryConfig,
 } from '../domain/detectedInfo'
 import { roundToTwoDigit } from '../utils/roundToTwoDigit'
+import { PREVIEW_IMAGE_SIZE } from './FileUploader.tsx'
 
 export type ImageDimension = {
   width: number
@@ -34,12 +35,14 @@ export default function BoundingBox({
           boundingBoxRatio,
           renderDimension,
         )
+        const color = objectCategoryConfig[detectedObject.parent].color
+        console.log('color', color)
 
         return (
           <>
             <div
-              className="absolute rounded border-2 border-green-500"
-              style={boundingBoxStyle}
+              className="absolute rounded border-2"
+              style={{ ...boundingBoxStyle, borderColor: color }}
             />
           </>
         )
