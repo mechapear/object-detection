@@ -1,4 +1,5 @@
 import { ChangeEventHandler, useRef, useState } from 'react'
+import BoundingBox from './components/BoundingBox'
 
 export type ImageDimension = {
   width: number
@@ -24,11 +25,10 @@ export type DetectedInfo = {
   detected_objects: DetectedObject[]
 }
 
+export const PREVIEW_IMAGE_SIZE = 300
+
 export default function App() {
   const [image, setImage] = useState<string | null>(null)
-  const [imageDimension, setImageDimension] = useState<ImageDimension | null>(
-    null,
-  )
   const [detectedInfo, setDetectedInfo] = useState<DetectedInfo | null>(null)
   const imageRef = useRef<HTMLImageElement | null>(null)
 
@@ -41,10 +41,6 @@ export default function App() {
     const base64 = await convertFileToBase64String(imageInput)
     if (!base64) return
     setImage(base64)
-
-    const dimension = getImageDimension(imageRef.current)
-    if (!dimension) return
-    setImageDimension(dimension)
 
     try {
       const data = await postImage(base64).then((res) => res.json())
@@ -62,16 +58,29 @@ export default function App() {
         <input type="file" accept="image/*" onChange={handleUploadImage} />
       </div>
       {image && (
-        <img
-          ref={imageRef}
-          src={image}
-          alt="preview"
-          height="300px"
-          width="300px"
-        />
+        <>
+          <div
+            className="relative grid place-items-center border border-red-500"
+            style={{
+              width: `${PREVIEW_IMAGE_SIZE}px`,
+              height: `${PREVIEW_IMAGE_SIZE}px`,
+            }}
+          >
+            <BoundingBox
+              imageDomRef={imageRef.current}
+              detectedInfo={detectedInfo}
+            />
+            <img
+              key={detectedInfo?.service_id}
+              ref={imageRef}
+              src={image}
+              alt="preview"
+              className="h-auto max-h-full w-full"
+            />
+          </div>
+        </>
       )}
       {detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}
-      {imageDimension && <pre>{JSON.stringify(imageDimension, null, 2)}</pre>}
     </>
   )
 }
@@ -126,9 +135,4 @@ function convertFileToBase64String(file: File): Promise<string | void> {
       return base64
     })
     .catch((error) => console.log(error))
-}
-
-function getImageDimension(dom: HTMLImageElement | null): ImageDimension {
-  if (!dom) return { width: 0, height: 0 }
-  return { width: dom.naturalWidth, height: dom.naturalHeight }
 }
