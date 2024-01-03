@@ -1,4 +1,4 @@
-import { PREVIEW_IMAGE_SIZE } from '../App'
+import { PREVIEW_IMAGE_SIZE } from '../components/FileUploader'
 import {
   BoundingBox,
   DetectedInfo,
