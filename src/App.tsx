@@ -1,4 +1,4 @@
-import { ChangeEventHandler, useState } from 'react'
+import { ChangeEventHandler, useRef, useState } from 'react'
 
 export type ImageDimension = {
   width: number
@@ -30,6 +30,7 @@ export default function App() {
     null,
   )
   const [detectedInfo, setDetectedInfo] = useState<DetectedInfo | null>(null)
+  const imageRef = useRef<HTMLImageElement | null>(null)
 
   const handleUploadImage: ChangeEventHandler<HTMLInputElement> = async (
     event,
@@ -41,7 +42,7 @@ export default function App() {
     if (!base64) return
     setImage(base64)
 
-    const dimension = await getImageDimension(imageInput)
+    const dimension = getImageDimension(imageRef.current)
     if (!dimension) return
     setImageDimension(dimension)
 
@@ -60,7 +61,15 @@ export default function App() {
         <label>Select image: </label>
         <input type="file" accept="image/*" onChange={handleUploadImage} />
       </div>
-      {image && <img src={image} alt="preview" height="300px" width="300px" />}
+      {image && (
+        <img
+          ref={imageRef}
+          src={image}
+          alt="preview"
+          height="300px"
+          width="300px"
+        />
+      )}
       {detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}
       {imageDimension && <pre>{JSON.stringify(imageDimension, null, 2)}</pre>}
     </>
@@ -119,21 +128,7 @@ function convertFileToBase64String(file: File): Promise<string | void> {
     .catch((error) => console.log(error))
 }
 
-function getImageDimension(file: File): Promise<ImageDimension> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-
-    reader.onloadend = () => {
-      const image = new Image()
-      image.onload = function () {
-        resolve({ width: image.width, height: image.height })
-      }
-      image.src = reader.result as string
-    }
-
-    reader.onerror = (error) => {
-      reject(error)
-    }
-  })
+function getImageDimension(dom: HTMLImageElement | null): ImageDimension {
+  if (!dom) return { width: 0, height: 0 }
+  return { width: dom.naturalWidth, height: dom.naturalHeight }
 }
