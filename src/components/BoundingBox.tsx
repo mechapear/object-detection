@@ -2,7 +2,7 @@ import {
   BoundingBox,
   DetectedInfo,
   DetectedObject,
-  objectCategoryConfig,
+  ObjectCategory,
 } from '../domain/detectedInfo'
 import { roundToTwoDigit } from '../utils/roundToTwoDigit'
 import { PREVIEW_IMAGE_SIZE } from './FileUploader.tsx'
@@ -11,6 +11,19 @@ export type ImageDimension = {
   width: number
   height: number
 }
+
+export const objectCategoryColor = {
+  human: '#3747CE',
+  vehicle: '#289B6B',
+  object: '#24AFFD',
+  animal: '#F3A433',
+  accessory: '#3747CE',
+  sport: '#FF556E',
+  kitchenware: '#7C31AD',
+  food: '#7C31AD',
+  furniture: '#FC72A4',
+  electronic: '#FC72A4',
+} satisfies Record<ObjectCategory, string>
 
 export type BoundingBoxProps = {
   imageDomRef: HTMLImageElement | null
@@ -35,8 +48,7 @@ export default function BoundingBox({
           boundingBoxRatio,
           renderDimension,
         )
-        const color = objectCategoryConfig[detectedObject.parent].color
-        console.log('color', color)
+        const color = objectCategoryColor[detectedObject.parent]
 
         return (
           <>
