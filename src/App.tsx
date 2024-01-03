@@ -1,7 +1,27 @@
 import { ChangeEventHandler, useState } from 'react'
 
+export type BoundingBox = {
+  bottom: number
+  left: number
+  right: number
+  top: number
+}
+
+export type DetectedObject = {
+  bounding_box: BoundingBox
+  name: string
+  confidence: number
+  parent: string
+}
+
+export type DetectedInfo = {
+  service_id: string
+  detected_objects: DetectedObject[]
+}
+
 export default function App() {
   const [image, setImage] = useState<string | null>(null)
+  const [detectedInfo, setDetectedInfo] = useState<DetectedInfo | null>(null)
 
   const handleUploadImage: ChangeEventHandler<HTMLInputElement> = async (
     event,
@@ -9,24 +29,62 @@ export default function App() {
     const imageInput = event.target.files?.[0]
     if (!imageInput) return
 
-    const base64 = await getBase64String(imageInput)
+    const base64 = await convertFileToBase64String(imageInput)
     if (!base64) return
     setImage(base64)
+
+    try {
+      const data = await postImage(base64).then((res) => res.json())
+      setDetectedInfo(data)
+      return data
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (
     <>
-      <form onSubmit={(event) => event.preventDefault()}>
+      <div>
         <label>Select image: </label>
         <input type="file" accept="image/*" onChange={handleUploadImage} />
-        <button type="submit">Submit</button>
-      </form>
+      </div>
       {image && <img src={image} alt="preview" height="100px" width="100px" />}
+      {detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}
     </>
   )
 }
 
-function getBase64String(file: File): Promise<string | void> {
+async function postImage(imageBase64: string): Promise<Response> {
+  return fetch('https://nvision.nipa.cloud/api/v1/object-detection', {
+    method: 'POST',
+    headers: {
+      Authorization:
+        'cdb29f355cb4059995e05420dc8d963f657898bf3a5f2f5e7a88c58279f5e4a0a1c4c4cf874594b42e413fc45c425425ac',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      raw_data: removeBase64Header(imageBase64),
+      configurations: [
+        {
+          parameter: 'OutputCroppedImage',
+          value: 'false',
+        },
+        {
+          parameter: 'ConfidenceThreshold',
+          value: '0.1',
+        },
+      ],
+    }),
+  })
+}
+
+function removeBase64Header(str: string): string {
+  // get base64 string after 'data:image/jpeg;base64,'
+  const startIndex = 'data:image/jpeg;base64,'.length
+  return str.substr(startIndex)
+}
+
+function convertFileToBase64String(file: File): Promise<string | void> {
   return new Promise<string>((resolve, reject) => {
     // create new FileReader
     const reader = new FileReader()
