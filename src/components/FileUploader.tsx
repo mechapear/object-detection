@@ -67,7 +67,7 @@ export default function FileUploader() {
           </div>
         </div>
       )}
-      <div className="mt-4 max-w-2xl">
+      <div className="mt-4">
         <DetectedDetail detectedInfo={detectedInfo} />
       </div>
       {/*{detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}*/}

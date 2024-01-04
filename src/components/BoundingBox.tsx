@@ -19,8 +19,8 @@ export const objectCategoryColor = {
   animal: '#F3A433',
   accessory: '#3747CE',
   sport: '#FF556E',
-  kitchenware: '#7C31AFE6',
-  food: '#7C31AFE6',
+  kitchenware: '#7C31AFCC',
+  food: '#7C31AFCC',
   furniture: '#FC72A4',
   electronic: '#FC72A4',
 } satisfies Record<ObjectCategory, string>

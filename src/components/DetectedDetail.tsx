@@ -21,12 +21,12 @@ export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
 
   return (
     <>
-      <div className="grid grid-flow-col items-center justify-evenly">
+      <div className="grid grid-cols-3 items-center gap-2 md:grid-cols-4">
         {Array.from(categories).map((category) => {
           const Icon = objectCategoryIcon[category]
           return (
             <button
-              className="flex w-fit cursor-pointer flex-col items-center rounded-lg border border-gray-100 bg-gray-100 p-2.5 hover:bg-gray-900 hover:text-white"
+              className="flex w-24 cursor-pointer flex-col items-center rounded-lg border border-gray-100 bg-gray-100 py-2.5 hover:bg-gray-900 hover:text-white"
               onClick={() => {
                 setIsShow(true)
                 setSelectedCategory(category)
@@ -56,16 +56,15 @@ export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
 
           return (
             <div
-              className="my-2 flex rounded-lg border-2 bg-white"
+              className="my-4 flex rounded-lg border-2 bg-white"
               style={{
                 borderColor: color,
               }}
             >
               <div
-                className="flex w-[120px] flex-col items-center border-r-2 p-4"
+                className="flex w-[120px] flex-col items-center p-4"
                 style={{
                   backgroundColor: color,
-                  borderColor: color,
                 }}
               >
                 {Icon && <Icon />}
