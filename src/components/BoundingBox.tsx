@@ -34,7 +34,7 @@ export default function BoundingBox({
   detectedInfo,
 }: BoundingBoxProps) {
   const naturalDimension = getNaturalImageDimension(imageDomRef)
-  const renderDimension = getRenderImageDimension(imageDomRef)
+  const renderDimension = getRenderImageDimension(naturalDimension)
 
   return (
     <>
@@ -70,9 +70,23 @@ function getNaturalImageDimension(
   return { width: dom.naturalWidth, height: dom.naturalHeight }
 }
 
-function getRenderImageDimension(dom: HTMLImageElement | null): ImageDimension {
-  if (!dom) return { width: 0, height: 0 }
-  return { width: dom.width, height: dom.height }
+// cannot get render image dimension from DOM, so we need to calculate it base on natural dimension
+function getRenderImageDimension(
+  naturalDimension: ImageDimension,
+): ImageDimension {
+  const { width: naturalWidth, height: naturalHeight } = naturalDimension
+  const ratio = naturalWidth / naturalHeight
+  let width, height
+
+  if (naturalWidth > naturalHeight) {
+    width = PREVIEW_IMAGE_SIZE
+    height = roundToTwoDigit(PREVIEW_IMAGE_SIZE / ratio)
+    return { width, height }
+  }
+
+  width = roundToTwoDigit(PREVIEW_IMAGE_SIZE * ratio)
+  height = PREVIEW_IMAGE_SIZE
+  return { width, height }
 }
 
 function getBoundingBoxRatio(
@@ -93,6 +107,7 @@ function getBoundingBoxRatio(
   }
 }
 
+// adjust bounding box to fit render image
 function getBoundingBoxStyle(
   boundingBoxRation: BoundingBox,
   renderDimension: ImageDimension,
@@ -101,10 +116,12 @@ function getBoundingBoxStyle(
   const { width: renderWidth, height: renderHeight } = renderDimension
 
   const diffHeight = (PREVIEW_IMAGE_SIZE - renderHeight) / 2
+  const diffWidth = (PREVIEW_IMAGE_SIZE - renderWidth) / 2
+
   return {
     bottom: roundToTwoDigit(renderHeight + diffHeight - bottom),
-    left: left,
-    right: renderWidth - right,
+    left: diffWidth + left,
+    right: roundToTwoDigit(renderWidth + diffWidth - right),
     top: roundToTwoDigit(diffHeight + top),
   }
 }
