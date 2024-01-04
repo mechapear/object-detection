@@ -32,17 +32,25 @@ export default function FileUploader() {
 
   return (
     <>
-      <div>
-        <label>Select image: </label>
-        <input type="file" accept="image/*" onChange={handleUploadImage} />
+      <div className="rounded-lg border border-gray-200 p-5 shadow-md">
+        <label className="mb-2 ml-2 block text-sm font-medium text-gray-900">
+          Select image
+        </label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleUploadImage}
+          className="block w-full cursor-pointer rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-900 file:mr-4 file:rounded-l-lg file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-100 focus:outline-none"
+        />
       </div>
+
       {image && (
-        <>
+        <div className="grid place-content-center">
           <div
-            className="relative flex border border-red-500"
+            className="relative my-6 flex rounded-lg bg-gray-100 shadow-md"
             style={{
-              width: `${PREVIEW_IMAGE_SIZE}px`,
-              height: `${PREVIEW_IMAGE_SIZE}px`,
+              width: PREVIEW_IMAGE_SIZE,
+              height: PREVIEW_IMAGE_SIZE,
             }}
           >
             <BoundingBox
@@ -57,7 +65,7 @@ export default function FileUploader() {
               className="max-h-full w-full object-contain"
             />
           </div>
-        </>
+        </div>
       )}
       <div className="mt-4 max-w-2xl">
         <DetectedDetail detectedInfo={detectedInfo} />
