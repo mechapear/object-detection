@@ -45,31 +45,33 @@ export default function FileUploader() {
       </div>
 
       {image && (
-        <div className="grid place-content-center">
-          <div
-            className="relative my-6 flex rounded-lg bg-gray-100 shadow-md"
-            style={{
-              width: PREVIEW_IMAGE_SIZE,
-              height: PREVIEW_IMAGE_SIZE,
-            }}
-          >
-            <BoundingBox
-              imageDomRef={imageRef.current}
-              detectedInfo={detectedInfo}
-            />
-            <img
-              key={detectedInfo?.service_id}
-              ref={imageRef}
-              src={image}
-              alt="preview"
-              className="max-h-full w-full object-contain"
-            />
+        <>
+          <div className="grid place-content-center">
+            <div
+              className="relative my-6 flex rounded-lg bg-gray-100 shadow-md"
+              style={{
+                width: PREVIEW_IMAGE_SIZE,
+                height: PREVIEW_IMAGE_SIZE,
+              }}
+            >
+              <BoundingBox
+                imageDomRef={imageRef.current}
+                detectedInfo={detectedInfo}
+              />
+              <img
+                key={detectedInfo?.service_id}
+                ref={imageRef}
+                src={image}
+                alt="preview"
+                className="max-h-full w-full object-contain"
+              />
+            </div>
           </div>
-        </div>
+          <div className="mt-4">
+            <DetectedDetail detectedInfo={detectedInfo} />
+          </div>
+        </>
       )}
-      <div className="mt-4">
-        <DetectedDetail detectedInfo={detectedInfo} />
-      </div>
       {/*{detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}*/}
     </>
   )

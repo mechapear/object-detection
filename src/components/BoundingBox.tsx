@@ -13,16 +13,16 @@ export type ImageDimension = {
 }
 
 export const objectCategoryColor = {
-  human: '#3747CEE6',
-  vehicle: '#289B6B',
-  object: '#24AFFD',
-  animal: '#F3A433',
-  accessory: '#3747CE',
-  sport: '#FF556E',
-  kitchenware: '#7C31AFCC',
-  food: '#7C31AFCC',
-  furniture: '#FC72A4',
-  electronic: '#FC72A4',
+  human: '#B275F0',
+  vehicle: '#2CCE90',
+  object: '#4EBDFD',
+  animal: '#FAB62E',
+  accessory: '#15E0D6',
+  sport: '#FF8E42',
+  kitchenware: '#8FD65C',
+  food: '#8FD65C',
+  furniture: '#FC82AF',
+  electronic: '#FC82AF',
 } satisfies Record<ObjectCategory, string>
 
 export type BoundingBoxProps = {
