@@ -1,6 +1,7 @@
 import { ChangeEventHandler, useRef, useState } from 'react'
 import { DetectedInfo } from '../domain/detectedInfo.ts'
 import BoundingBox from './BoundingBox.tsx'
+import DetectedDetail from './DetectedDetail.tsx'
 
 export const PREVIEW_IMAGE_SIZE = 300
 
@@ -58,7 +59,10 @@ export default function FileUploader() {
           </div>
         </>
       )}
-      {detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}
+      <div className="mt-4 max-w-2xl">
+        <DetectedDetail detectedInfo={detectedInfo} />
+      </div>
+      {/*{detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}*/}
     </>
   )
 }

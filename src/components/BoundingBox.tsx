@@ -13,14 +13,14 @@ export type ImageDimension = {
 }
 
 export const objectCategoryColor = {
-  human: '#3747CE',
+  human: '#3747CEE6',
   vehicle: '#289B6B',
   object: '#24AFFD',
   animal: '#F3A433',
   accessory: '#3747CE',
   sport: '#FF556E',
-  kitchenware: '#7C31AD',
-  food: '#7C31AD',
+  kitchenware: '#7C31AFE6',
+  food: '#7C31AFE6',
   furniture: '#FC72A4',
   electronic: '#FC72A4',
 } satisfies Record<ObjectCategory, string>
