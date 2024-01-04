@@ -1,5 +1,9 @@
 import { useState } from 'react'
-import { DetectedInfo, ObjectCategory } from '../domain/detectedInfo.ts'
+import {
+  DetectedInfo,
+  DetectedObject,
+  ObjectCategory,
+} from '../domain/detectedInfo.ts'
 import { capitalize } from '../utils/capitalize.ts'
 import { roundToTwoDigit } from '../utils/roundToTwoDigit.ts'
 import { objectCategoryColor } from './BoundingBox.tsx'
@@ -13,37 +17,46 @@ export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
   const [isShow, setIsShow] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState('')
 
+  const sortedDetectedObjects = sortDetectedObjectsByConfidence(
+    detectedInfo?.detected_objects ?? [],
+  )
+
   // get all uniqe category
   const categories = new Set<ObjectCategory>()
-  detectedInfo?.detected_objects.map((detectedObject) => {
+  sortedDetectedObjects.map((detectedObject) => {
     categories.add(detectedObject.parent)
   })
 
   return (
     <>
-      <div className="grid grid-cols-3 items-center gap-2 md:grid-cols-4">
-        {Array.from(categories).map((category) => {
-          const Icon = objectCategoryIcon[category]
-          return (
-            <button
-              className="flex w-24 cursor-pointer flex-col items-center rounded-lg border border-gray-100 bg-gray-100 py-2.5 hover:bg-gray-900 hover:text-white"
-              onClick={() => {
-                setIsShow(true)
-                setSelectedCategory(category)
-              }}
-            >
-              {Icon && <Icon />}
-              <p className="text-sm">{category}</p>
-            </button>
-          )
-        })}
+      <h2 className="text-center text-xl font-bold text-gray-900">
+        Detected Detail
+      </h2>
+      <div className="my-4 grid grid-cols-3 items-center gap-2 md:grid-cols-4">
+        {/*display category button when there are more than 1 category*/}
+        {categories.size > 1 &&
+          Array.from(categories).map((category) => {
+            const Icon = objectCategoryIcon[category]
+            return (
+              <button
+                className="flex w-24 cursor-pointer flex-col items-center rounded-lg border border-gray-100 bg-gray-100 py-2.5 text-sm hover:bg-gray-900 hover:text-white"
+                onClick={() => {
+                  setIsShow(true)
+                  setSelectedCategory(category)
+                }}
+              >
+                {Icon && <Icon />}
+                <p className="text-sm">{category}</p>
+              </button>
+            )
+          })}
       </div>
 
       {isShow &&
-        detectedInfo?.detected_objects.map((detectedObject) => {
+        sortedDetectedObjects.map((detectedObject) => {
           const category = detectedObject.parent
 
-          // if category is not selected, return null
+          // show only selected category
           if (category !== selectedCategory) return null
 
           // display only selected category
@@ -85,4 +98,13 @@ export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
         })}
     </>
   )
+}
+
+// sort detected objects by confidence from max to min
+function sortDetectedObjectsByConfidence(detectedObjects: DetectedObject[]) {
+  return detectedObjects.toSorted((a, b) => {
+    if (a.confidence > b.confidence) return -1
+    if (a.confidence < b.confidence) return 1
+    return 0
+  })
 }

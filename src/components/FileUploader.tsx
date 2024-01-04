@@ -40,7 +40,7 @@ export default function FileUploader() {
           type="file"
           accept="image/*"
           onChange={handleUploadImage}
-          className="block w-full cursor-pointer rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-900 file:mr-4 file:rounded-l-lg file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-100 focus:outline-none"
+          className="block w-full cursor-pointer rounded-lg border border-gray-200 bg-gray-50 pr-2.5 text-sm text-gray-900 file:mr-4 file:rounded-l-lg file:border-0 file:bg-gray-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-100 focus:outline-none"
         />
       </div>
 
