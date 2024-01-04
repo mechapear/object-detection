@@ -39,7 +39,7 @@ export default function FileUploader() {
       {image && (
         <>
           <div
-            className="relative grid place-items-center border border-red-500"
+            className="relative flex border border-red-500"
             style={{
               width: `${PREVIEW_IMAGE_SIZE}px`,
               height: `${PREVIEW_IMAGE_SIZE}px`,
@@ -54,7 +54,7 @@ export default function FileUploader() {
               ref={imageRef}
               src={image}
               alt="preview"
-              className="h-auto max-h-full w-full"
+              className="max-h-full w-full object-contain"
             />
           </div>
         </>
