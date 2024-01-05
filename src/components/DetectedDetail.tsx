@@ -22,7 +22,7 @@ export default function DetectedDetail({
   activeCategory,
   setActiveCategory,
 }: DetectedDetailProps) {
-  const [isShow, setIsShow] = useState(false)
+  const [isShow, setIsShow] = useState(true)
 
   const sortedDetectedObjects = sortDetectedObjectsByConfidence(
     detectedInfo?.detected_objects ?? [],
