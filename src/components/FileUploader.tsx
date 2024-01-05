@@ -13,6 +13,7 @@ export default function FileUploader() {
   const [image, setImage] = useState<string | null>(null)
   const [detectedInfo, setDetectedInfo] = useState<DetectedInfo | null>(null)
   const imageRef = useRef<HTMLImageElement | null>(null)
+  const currentImageRef = useRef('')
 
   const [focusedObject, setFocusedObject] = useState<DetectedObject | null>(
     null,
@@ -30,14 +31,19 @@ export default function FileUploader() {
     const base64 = await convertFileToBase64String(imageInput)
     if (!base64) return
     setImage(base64)
+    // save current image base64 to check if image has changed
+    currentImageRef.current = base64
+    // reset state when image has changed
     setDetectedInfo(null)
     setFocusedObject(null)
     setActiveCategory(null)
 
     try {
       const data = await postImage(base64).then((res) => res.json())
-      setDetectedInfo(data)
-      return data
+      // if image has changed, don't set detectedInfo
+      if (currentImageRef.current === base64) {
+        setDetectedInfo(data)
+      }
     } catch (err) {
       console.log(err)
     }
@@ -92,7 +98,6 @@ export default function FileUploader() {
           </div>
         </>
       )}
-      {/*{detectedInfo && <pre>{JSON.stringify(detectedInfo, null, 2)}</pre>}*/}
     </>
   )
 }
