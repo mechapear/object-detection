@@ -92,8 +92,9 @@ export default function DetectedDetail({
               onMouseEnter={() => setFocusedObject(detectedObject)}
               onMouseLeave={() => setFocusedObject(null)}
             >
+              {/* Icon section */}
               <div
-                className="flex w-[120px] flex-col items-center p-4"
+                className="flex min-w-[100px] flex-col items-center p-4"
                 style={{
                   backgroundColor: color,
                 }}
@@ -103,13 +104,25 @@ export default function DetectedDetail({
                   {capitalize(category)}
                 </span>
               </div>
-              <div className="p-4 pl-5">
-                <h5 className="text-base font-bold text-gray-900">
-                  {capitalize(name)}
-                </h5>
-                <p className="text-base text-gray-700">
-                  {confidenceInPercent}%
-                </p>
+              {/* Detail section */}
+              <div className="w-full p-4 pl-5">
+                <div className="mb-2 flex justify-between">
+                  <span className="text-base font-bold text-gray-900">
+                    {capitalize(name)}
+                  </span>
+                  <span className="text-sm text-gray-700">
+                    {confidenceInPercent}%
+                  </span>
+                </div>
+                <div className="h-2.5 w-full rounded-full bg-gray-200">
+                  <div
+                    className="h-2.5 rounded-full"
+                    style={{
+                      backgroundColor: color,
+                      width: `${confidenceInPercent}%`,
+                    }}
+                  ></div>
+                </div>
               </div>
             </div>
           )
