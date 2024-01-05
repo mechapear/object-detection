@@ -31,6 +31,8 @@ export default function FileUploader() {
     if (!base64) return
     setImage(base64)
     setDetectedInfo(null)
+    setFocusedObject(null)
+    setActiveCategory(null)
 
     try {
       const data = await postImage(base64).then((res) => res.json())
