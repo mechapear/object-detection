@@ -6,6 +6,7 @@ import {
 } from '../domain/detectedInfo.ts'
 import BoundingBox from './BoundingBox.tsx'
 import DetectedDetail from './DetectedDetail.tsx'
+import { LoadingIcon } from './icon.tsx'
 
 export const PREVIEW_IMAGE_SIZE = 300
 
@@ -14,6 +15,7 @@ export default function FileUploader() {
   const [detectedInfo, setDetectedInfo] = useState<DetectedInfo | null>(null)
   const imageRef = useRef<HTMLImageElement | null>(null)
   const currentImageRef = useRef('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const [focusedObject, setFocusedObject] = useState<DetectedObject | null>(
     null,
@@ -37,12 +39,14 @@ export default function FileUploader() {
     setDetectedInfo(null)
     setFocusedObject(null)
     setActiveCategory(null)
+    setIsLoading(true)
 
     try {
       const data = await postImage(base64).then((res) => res.json())
       // if image has changed, don't set detectedInfo
       if (currentImageRef.current === base64) {
         setDetectedInfo(data)
+        setIsLoading(false)
       }
     } catch (err) {
       console.log(err)
@@ -73,6 +77,13 @@ export default function FileUploader() {
                 height: PREVIEW_IMAGE_SIZE,
               }}
             >
+              {isLoading && (
+                <>
+                  <LoadingIcon />
+                  <div className="z-5 absolute inset-0 h-[300px] w-[300px] bg-white/40 backdrop-blur-sm" />
+                </>
+              )}
+
               <BoundingBox
                 imageDomRef={imageRef.current}
                 detectedInfo={detectedInfo}
