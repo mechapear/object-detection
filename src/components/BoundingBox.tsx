@@ -28,17 +28,35 @@ export const objectCategoryColor = {
 export type BoundingBoxProps = {
   imageDomRef: HTMLImageElement | null
   detectedInfo: DetectedInfo | null
+  focusedObject: DetectedObject | null
+  activeCategory: ObjectCategory | null
 }
 export default function BoundingBox({
   imageDomRef,
   detectedInfo,
+  focusedObject,
+  activeCategory,
 }: BoundingBoxProps) {
   const naturalDimension = getNaturalImageDimension(imageDomRef)
   const renderDimension = getRenderImageDimension(naturalDimension)
+  const focusedBoundingBoxStyle = focusedObject
+    ? getBoundingBoxStyle(
+        getBoundingBoxRatio(
+          naturalDimension,
+          renderDimension,
+          focusedObject.bounding_box,
+        ),
+        renderDimension,
+      )
+    : null
 
   return (
     <>
       {detectedInfo?.detected_objects.map((detectedObject: DetectedObject) => {
+        // show only active category
+        if (activeCategory && detectedObject.parent !== activeCategory)
+          return null
+
         const boundingBoxRatio = getBoundingBoxRatio(
           naturalDimension,
           renderDimension,
@@ -59,6 +77,17 @@ export default function BoundingBox({
           </>
         )
       })}
+
+      {/*add extra bounding box for focused object*/}
+      {focusedObject && (
+        <div
+          className="absolute rounded border-4"
+          style={{
+            ...focusedBoundingBoxStyle,
+            borderColor: objectCategoryColor[focusedObject.parent],
+          }}
+        />
+      )}
     </>
   )
 }

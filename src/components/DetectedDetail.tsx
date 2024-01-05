@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import {
   DetectedInfo,
   DetectedObject,
@@ -11,11 +11,18 @@ import { objectCategoryIcon } from './icon.tsx'
 
 export type DetectedDetailProps = {
   detectedInfo: DetectedInfo | null
+  setFocusedObject: Dispatch<SetStateAction<DetectedObject | null>>
+  activeCategory: ObjectCategory | null
+  setActiveCategory: Dispatch<SetStateAction<ObjectCategory | null>>
 }
 
-export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
-  const [isShow, setIsShow] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState('')
+export default function DetectedDetail({
+  detectedInfo,
+  setFocusedObject,
+  activeCategory,
+  setActiveCategory,
+}: DetectedDetailProps) {
+  const [isShow, setIsShow] = useState(false)
 
   const sortedDetectedObjects = sortDetectedObjectsByConfidence(
     detectedInfo?.detected_objects ?? [],
@@ -39,10 +46,19 @@ export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
             const Icon = objectCategoryIcon[category]
             return (
               <button
-                className="flex w-24 cursor-pointer flex-col items-center rounded-lg border border-gray-100 bg-gray-100 py-2.5 text-sm hover:bg-gray-900 hover:text-white"
+                className="flex w-24 cursor-pointer flex-col items-center rounded-lg border border-gray-100 bg-gray-100 py-2.5 text-sm hover:bg-gray-600 hover:text-white"
+                style={{
+                  backgroundColor:
+                    activeCategory === category
+                      ? objectCategoryColor[category]
+                      : undefined,
+                }}
                 onClick={() => {
                   setIsShow(true)
-                  setSelectedCategory(category)
+                  setActiveCategory((prevCategory) => {
+                    if (prevCategory === category) return null
+                    return category
+                  })
                 }}
               >
                 {Icon && <Icon />}
@@ -56,8 +72,8 @@ export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
         sortedDetectedObjects.map((detectedObject) => {
           const category = detectedObject.parent
 
-          // show only selected category
-          if (category !== selectedCategory) return null
+          // show only active category
+          if (activeCategory && category !== activeCategory) return null
 
           // display only selected category
           const name = detectedObject.name
@@ -73,6 +89,8 @@ export default function DetectedDetail({ detectedInfo }: DetectedDetailProps) {
               style={{
                 borderColor: color,
               }}
+              onMouseEnter={() => setFocusedObject(detectedObject)}
+              onMouseLeave={() => setFocusedObject(null)}
             >
               <div
                 className="flex w-[120px] flex-col items-center p-4"

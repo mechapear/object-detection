@@ -1,5 +1,9 @@
 import { ChangeEventHandler, useRef, useState } from 'react'
-import { DetectedInfo } from '../domain/detectedInfo.ts'
+import {
+  DetectedInfo,
+  DetectedObject,
+  ObjectCategory,
+} from '../domain/detectedInfo.ts'
 import BoundingBox from './BoundingBox.tsx'
 import DetectedDetail from './DetectedDetail.tsx'
 
@@ -9,6 +13,13 @@ export default function FileUploader() {
   const [image, setImage] = useState<string | null>(null)
   const [detectedInfo, setDetectedInfo] = useState<DetectedInfo | null>(null)
   const imageRef = useRef<HTMLImageElement | null>(null)
+
+  const [focusedObject, setFocusedObject] = useState<DetectedObject | null>(
+    null,
+  )
+  const [activeCategory, setActiveCategory] = useState<ObjectCategory | null>(
+    null,
+  )
 
   const handleUploadImage: ChangeEventHandler<HTMLInputElement> = async (
     event,
@@ -57,6 +68,8 @@ export default function FileUploader() {
               <BoundingBox
                 imageDomRef={imageRef.current}
                 detectedInfo={detectedInfo}
+                focusedObject={focusedObject}
+                activeCategory={activeCategory}
               />
               <img
                 key={detectedInfo?.service_id}
@@ -68,7 +81,12 @@ export default function FileUploader() {
             </div>
           </div>
           <div className="mt-4">
-            <DetectedDetail detectedInfo={detectedInfo} />
+            <DetectedDetail
+              detectedInfo={detectedInfo}
+              setFocusedObject={setFocusedObject}
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
+            />
           </div>
         </>
       )}
