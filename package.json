@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "bunx --bun vite",
     "build": "tsc && bunx --bun vite build",
+    "build-gh": "bun run build --base=/object-detection",
+    "deploy-gh": "bun run build-gh && gh-pages -d dist",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
