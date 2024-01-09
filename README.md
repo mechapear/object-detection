@@ -1,4 +1,4 @@
-Object Detector
+Object Detection
 
 Live Demo: https://mechapear.github.io/object-detection/
 
